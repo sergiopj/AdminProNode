@@ -2,7 +2,21 @@
 const express = require('express');
 // moongose db 
 const mongoose = require('mongoose')
-    // connection to the database
+const bodyParser = require('body-parser')
+
+// variable initialization to create the application
+const app = express();
+
+/* BODY PARSER */
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+// import routes
+const appRoutes = require('./routes/app');
+const appUser = require('./routes/user');
+
+// connection to the database
 mongoose.connection.openUri('mongodb://localhost:27017/hospitalDB', (err, res) => {
     if (err) {
         throw err;
@@ -10,16 +24,10 @@ mongoose.connection.openUri('mongodb://localhost:27017/hospitalDB', (err, res) =
     console.log('Mongodb is running in port 27017: \x1b[32m%s\x1b[0m', 'online');
 });
 
-// variable initialization to create the application
-const app = express();
-
 // routes
-app.get('/', (req, res) => {
-    res.status(200).json({
-        ok: true,
-        message: 'Correctly attended request'
-    })
-})
+app.use('/user', appUser); // user
+app.use('/', appRoutes); // main
+
 
 // listen to requests
 app.listen(3000, () => {
