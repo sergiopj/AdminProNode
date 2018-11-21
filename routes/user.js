@@ -1,8 +1,9 @@
 // requires
 const express = require('express');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const SEED = require('../config/config').SEED;
+
+// verify token middleware
+const auth = require('../middlewares/auth').verifyToken;
 
 // variable initialization to create the application
 const app = express();
@@ -31,26 +32,8 @@ app.get('/', (req, res) => {
         });
 });
 
-/* VERIFY TOKEN middleware*/
-app.use('/', (req, res, next) => {
-    // get token from url
-    const token = req.query.token;
-    // Verify if the token is valid
-    jwt.verify(token, SEED, (err, decoded ) => {
-        if (err) {
-            return res.status(401).json({
-                ok: false,
-                message: 'Invalid Token',
-                err
-            });
-        }
-        // If everything is fine you can continue
-        next();
-    });
-});
-
 /* UPDATE USER */
-app.put('/:id', (req, res) => {
+app.put('/:id', auth, (req, res) => {
 
     // get id from url
     const id = req.params.id;
@@ -71,7 +54,7 @@ app.put('/:id', (req, res) => {
         userDB.email = req.body.email;
         userDB.role = req.body.role;
 
-        userDB.save( (err, savedUser) => {
+        userDB.save((err, savedUser) => {
 
             if (err) {
                 return res.status(400).json({
@@ -82,7 +65,7 @@ app.put('/:id', (req, res) => {
             }
 
             // no send original password
-            savedUser.password = ''; 
+            savedUser.password = '';
 
             res.status(200).json({
                 ok: true,
@@ -94,7 +77,7 @@ app.put('/:id', (req, res) => {
 });
 
 /* CREATE NEW USER */
-app.post('/', (req, res) => {
+app.post('/', auth, (req, res) => {
 
     // creating a reference to a user type variable
     const user = new User({
@@ -124,7 +107,7 @@ app.post('/', (req, res) => {
 });
 
 /* DELETE USER */
-app.delete('/:id', (req, res) => {
+app.delete('/:id', auth, (req, res) => {
 
     const id = req.params.id;
 
@@ -140,7 +123,7 @@ app.delete('/:id', (req, res) => {
         if (!deletedUser) {
             return res.status(400).json({
                 ok: false,
-                errors: {message: `Dont exists user with id - ${id}`},
+                errors: { message: `Dont exists user with id - ${id}` },
             });
         }
         // if there are no errors
