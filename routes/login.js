@@ -1,6 +1,7 @@
 // requires
 const express = require('express');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 // variable initialization to create the application
 const app = express();
@@ -38,13 +39,16 @@ app.post('/', (req, res) => {
             });
         }    
         
-        // create a token...
+        // create a token, expires in 4 hours
+        userDB.password = '';
+        const token = jwt.sign({ user: userDB }, '@my-seed', { expiresIn: 14400 });
 
         // correct login
         res.status(200).json({
             ok: true,
             message: 'Login ok',
-            userDB
+            token,
+            userDB 
         });
 
     });   
