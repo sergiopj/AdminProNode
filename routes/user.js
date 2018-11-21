@@ -101,7 +101,8 @@ app.post('/', auth, (req, res) => {
         res.status(201).json({
             ok: true,
             message: 'User saved in the database',
-            savedUser
+            savedUser,
+            userToken: req.user
         });
     });
 });

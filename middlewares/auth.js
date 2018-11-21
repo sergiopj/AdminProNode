@@ -15,6 +15,8 @@ exports.verifyToken = (req, res, next) => {
                 err
             });
         }
+        // in the request we have the user information
+        req.user = decoded.user;
         // If everything is fine you can continue
         next();
     });
