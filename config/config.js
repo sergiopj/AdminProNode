@@ -1,0 +1,1 @@
+module.exports.SEED = '@my-seed-test-sergio';

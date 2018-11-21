@@ -1,6 +1,8 @@
 // requires
 const express = require('express');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const SEED = require('../config/config').SEED;
 
 // variable initialization to create the application
 const app = express();
@@ -27,6 +29,24 @@ app.get('/', (req, res) => {
                 users
             });
         });
+});
+
+/* VERIFY TOKEN middleware*/
+app.use('/', (req, res, next) => {
+    // get token from url
+    const token = req.query.token;
+    // Verify if the token is valid
+    jwt.verify(token, SEED, (err, decoded ) => {
+        if (err) {
+            return res.status(401).json({
+                ok: false,
+                message: 'Invalid Token',
+                err
+            });
+        }
+        // If everything is fine you can continue
+        next();
+    });
 });
 
 /* UPDATE USER */
