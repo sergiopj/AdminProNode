@@ -1,5 +1,6 @@
 // requires
 const express = require('express');
+const bcrypt = require('bcryptjs');
 
 // variable initialization to create the application
 const app = express();
@@ -25,7 +26,51 @@ app.get('/', (req, res) => {
                 ok: true,
                 users
             });
-        });  
+        });
+});
+
+/* UPDATE USER */
+app.put('/:id', (req, res) => {
+
+    // get id from url
+    const id = req.params.id;
+
+    // check if the id that arrives by parameter corresponds to a user
+    User.findById(id, (err, userDB) => {
+
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                message: `Error a user with id - ${id} has not been found`,
+                err
+            });
+        }
+
+        // save user data
+        userDB.name = req.body.name;
+        userDB.email = req.body.email;
+        userDB.role = req.body.role;
+
+        userDB.save( (err, savedUser) => {
+
+            if (err) {
+                return res.status(400).json({
+                    ok: false,
+                    message: `Error when updating the user with id - ${id}`,
+                    err
+                });
+            }
+
+            // no send original password
+            savedUser.password = ''; 
+
+            res.status(200).json({
+                ok: true,
+                message: 'Update user in database',
+                savedUser
+            });
+        });
+    });
 });
 
 /* CREATE NEW USER */
@@ -35,13 +80,13 @@ app.post('/', (req, res) => {
     const user = new User({
         name: req.body.name,
         email: req.body.email,
-        password: req.body.password,
+        password: bcrypt.hashSync(req.body.password, 10),
         img: req.body.img,
-        role: req.body.role 
+        role: req.body.role
     });
 
     // save user in mongodb
-    user.save( (err, savedUser) => {
+    user.save((err, savedUser) => {
         if (err) {
             return res.status(400).json({
                 ok: false,
@@ -56,8 +101,36 @@ app.post('/', (req, res) => {
             savedUser
         });
     });
-
-    
 });
+
+/* DELETE USER */
+app.delete('/:id', (req, res) => {
+
+    const id = req.params.id;
+
+    User.findByIdAndRemove(id, (err, deletedUser) => {
+
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                message: `Error when removing the user with id - ${id}`,
+                err
+            });
+        }
+        if (!deletedUser) {
+            return res.status(400).json({
+                ok: false,
+                errors: {message: `Dont exists user with id - ${id}`},
+            });
+        }
+        // if there are no errors
+        res.status(200).json({
+            ok: true,
+            message: `The user with id - ${id} has been removed correctly`,
+            deletedUser
+        });
+    });
+
+})
 
 module.exports = app;
