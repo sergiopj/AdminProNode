@@ -14,8 +14,14 @@ const User = require('../models/user');
 
 /* GET ALL USERS */
 app.get('/', (req, res) => {
+
+    // to limit number of elements
+    const from = Number(req.query.from) || 0;
+
     // find all records in db {}, only this fields ('name email img role')
     User.find({}, 'name email img role')
+        .skip(from)
+        .limit()
         .exec((err, users) => {
             if (err) {
                 return res.status(500).json({
@@ -24,11 +30,16 @@ app.get('/', (req, res) => {
                     err
                 });
             }
-            // if there are no errors
-            res.status(200).json({
-                ok: true,
-                users
+            // count number of users
+            User.count({}, (err, count) => {
+                // if there are no errors
+                res.status(200).json({
+                    ok: true,
+                    users,
+                    total: count
+                });
             });
+
         });
 });
 
@@ -134,7 +145,6 @@ app.delete('/:id', auth, (req, res) => {
             deletedUser
         });
     });
-
 })
 
 module.exports = app;

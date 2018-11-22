@@ -13,8 +13,16 @@ const Doctor = require('../models/doctor');
 
 /* GET ALL DOCTORS */
 app.get('/', (req, res) => {
+
+    // to limit number of elements
+    const from = Number(req.query.from) || 0;
+
     // find all records in db {}
     Doctor.find({})
+        .skip()
+        .limit(from)
+        .populate('users')
+        .populate('hospitals')
         .exec((err, doctors) => {
             if (err) {
                 return res.status(500).json({
@@ -23,11 +31,17 @@ app.get('/', (req, res) => {
                     err
                 });
             }
-            // if there are no errors
-            res.status(200).json({
-                ok: true,
-                doctors
+
+            // count number of doctors
+            Doctor.count({}, (err, count) => {
+                // if there are no errors
+                res.status(200).json({
+                    ok: true,
+                    doctors,
+                    total: count
+                });
             });
+
         });
 });
 

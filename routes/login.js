@@ -29,7 +29,7 @@ app.post('/', (req, res) => {
         if (!userDB) {
             return res.status(400).json({
                 ok: false,
-                errors: {message: `Dont exists user with this email`},
+                errors: { message: `Dont exists user with this email` },
             });
         }
 
@@ -37,23 +37,23 @@ app.post('/', (req, res) => {
         if (!bcrypt.compareSync(body.password, userDB.password)) {
             return res.status(400).json({
                 ok: false,
-                errors: {message: `Dont exists user with this password`},
+                errors: { message: `Dont exists user with this password` },
             });
-        }    
-        
-        // create a token, expires in 4 hours
+        }
+
+        // create a token, expires in 8 hours
         userDB.password = '';
-        const token = jwt.sign({ user: userDB }, SEED, { expiresIn: 14400 });
+        const token = jwt.sign({ user: userDB }, SEED, { expiresIn: 28800 });
 
         // correct login
         res.status(200).json({
             ok: true,
             message: 'Login ok',
             token,
-            userDB 
+            userDB
         });
 
-    });   
+    });
 
 });
 
@@ -68,4 +68,4 @@ app.post('/', (req, res) => {
 
 
 
-module.exports = app; 
+module.exports = app;

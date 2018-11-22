@@ -1,3 +1,4 @@
+'use strict'
 // requires
 const express = require('express');
 
@@ -13,8 +14,16 @@ const Hospital = require('../models/hospital');
 
 /* GET ALL HOSPITALS */
 app.get('/', (req, res) => {
+
+    // to limit number of elements
+    const from = Number(req.query.from) || 0;
+
     // find all records in db {}
     Hospital.find({})
+        .skip()
+        .limit(from)
+        // populate to define what data you want from another table or collection
+        .populate('users', 'name email')
         .exec((err, hospitals) => {
             if (err) {
                 return res.status(500).json({
@@ -23,10 +32,15 @@ app.get('/', (req, res) => {
                     err
                 });
             }
-            // if there are no errors
-            res.status(200).json({
-                ok: true,
-                hospitals
+
+            // count number of hospitals
+            Hospital.count({}, (err, count) => {
+                // if there are no errors
+                res.status(200).json({
+                    ok: true,
+                    hospitals,
+                    total: count
+                });
             });
         });
 });
