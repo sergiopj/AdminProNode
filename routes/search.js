@@ -57,8 +57,6 @@ app.get('/collection/:table/:term', (req, res) => {
             });
         })
     }
-
-
 });
 
 /* GENERAL SEARCH */
