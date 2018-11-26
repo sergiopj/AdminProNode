@@ -52,7 +52,8 @@ app.post('/', auth, (req, res) => {
     // creating a reference to a hospital type variable
     const hospital = new Hospital({
         name: req.body.name,
-        user: req.user._id
+        user: req.user._id,
+        img: req.body.img
     });
 
     // save user in mongodb

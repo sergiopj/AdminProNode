@@ -53,6 +53,7 @@ app.post('/', auth, (req, res) => {
     const doctor = new Doctor({
         name: req.body.name,
         hospital: req.body.hospital,
+        img: req.body.img,
         user: req.user._id
     });
 

@@ -14,49 +14,40 @@ app.get('/collection/:table/:term', (req, res) => {
 
     const table = req.params.table;
     const searchTerm = req.params.term;
-    // to search for all hospitals that contain the term
+    // to search for all elements that contain the term
     const regex = new RegExp(searchTerm, 'i');
+    let promise;
 
-    if (table === 'doctor') {
-        getDoctors(regex).then(doctors => {
-            res.status(200).json({
-                ok: true,
-                doctors
-            });
-        }).catch(err => {
+    switch (table) {
+        case 'hospital':
+            promise = getHospitals(regex);
+            break;
+        case 'doctor':
+            promise = getDoctors(regex);
+            break;
+        case 'user':
+            promise = getUsers(regex);
+            break;
+        default:
             return res.status(500).json({
                 ok: false,
-                message: `Error when get the doctors data`,
-                err
+                message: `Table name not valid`
             });
-        })
-    } else if (table === 'hospital') {
-        getHospitals(regex).then(hospitals => {
-            res.status(200).json({
-                ok: true,
-                hospitals
-            });
-        }).catch(err => {
-            return res.status(500).json({
-                ok: false,
-                message: `Error when get the hospitals data`,
-                err
-            });
-        })
-    } else {
-        getUsers(regex).then(users => {
-            res.status(200).json({
-                ok: true,
-                users
-            });
-        }).catch(err => {
-            return res.status(500).json({
-                ok: false,
-                message: `Error when get the users data`,
-                err
-            });
-        })
     }
+
+    promise.then(data => {
+        res.status(200).json({
+            ok: true,
+            [table]: data
+        });
+    }).catch(err => {
+        return res.status(500).json({
+            ok: false,
+            message: `Error when get all data`,
+            err
+        });
+    })
+
 });
 
 /* GENERAL SEARCH */

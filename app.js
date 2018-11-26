@@ -19,6 +19,9 @@ const loginRoutes = require('./routes/login');
 const hospitalRoutes = require('./routes/hospital');
 const doctorRoutes = require('./routes/doctor');
 const searchRoutes = require('./routes/search');
+const uploadRoutes = require('./routes/upload');
+const imagesRoutes = require('./routes/images');
+
 
 // connection to the database
 mongoose.connection.openUri('mongodb://localhost:27017/hospitalDB', (err, res) => {
@@ -34,6 +37,8 @@ app.use('/user', userRoutes); // user
 app.use('/doctor', doctorRoutes); // doctor
 app.use('/hospital', hospitalRoutes); // hospital
 app.use('/search', searchRoutes); // search data
+app.use('/upload', uploadRoutes); // upload files
+app.use('/images', imagesRoutes); // images
 app.use('/', appRoutes); // main
 
 
