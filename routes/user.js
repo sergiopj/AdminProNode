@@ -88,7 +88,7 @@ app.put('/:id', auth, (req, res) => {
 });
 
 /* CREATE NEW USER */
-app.post('/', auth, (req, res) => {
+app.post('/', (req, res) => {
 
     // creating a reference to a user type variable
     const user = new User({
