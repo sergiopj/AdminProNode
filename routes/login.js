@@ -41,8 +41,6 @@ app.post('/google', async(req, res) => {
 
     const token = req.body.token;
 
-    console.log('token', token)
-
     // wait the result of promise 
     const googleUser = await verify(token)
         .catch(error => {
