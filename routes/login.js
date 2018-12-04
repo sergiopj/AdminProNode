@@ -119,8 +119,12 @@ app.post('/', (req, res) => {
 
     const body = req.body;
 
+    console.log('BODY ', body);
+
     // check if there is a user with the same email as the one received
     User.findOne({ email: body.email }, (err, userDB) => {
+
+        console.log('userdb', userDB)
 
         if (err) {
             return res.status(500).json({
