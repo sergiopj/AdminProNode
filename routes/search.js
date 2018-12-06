@@ -95,7 +95,7 @@ function getDoctors(regex) {
 
 function getUsers(regex) {
     return new Promise((resolve, reject) => {
-        User.find({}, 'name email role')
+        User.find({}, 'name email role google')
             .or([{ 'name': regex }, { 'email': regex }]) // array of search conditions
             .exec((err, usersDB) => {
                 err ? reject('Error at load users data: ', err) : resolve(usersDB);

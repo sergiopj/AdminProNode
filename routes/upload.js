@@ -102,6 +102,7 @@ function uploadByType(type, id, fileName, res) {
                     });
                 });
             });
+            break;
         case 'doctor':
             Doctor.findById(id, (err, doctorDB) => {
                 if (!doctorDB) {
@@ -127,6 +128,7 @@ function uploadByType(type, id, fileName, res) {
                     });
                 });
             });
+            break;
         default:
             Hospital.findById(id, (err, hospitalDb) => {
                 if (!hospitalDb) {
@@ -152,6 +154,7 @@ function uploadByType(type, id, fileName, res) {
                     });
                 });
             });
+            break;
     }
 }
 

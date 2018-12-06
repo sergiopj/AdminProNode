@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
     const from = Number(req.query.from) || 0;
 
     // find all records in db {}, only this fields ('name email img role')
-    User.find({}, 'name email img role')
+    User.find({}, 'name email img role google')
         .skip(from)
         .limit()
         .exec((err, users) => {
