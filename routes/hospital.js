@@ -45,6 +45,34 @@ app.get('/', (req, res) => {
         });
 });
 
+/* GET HOSPITAL BY ID */
+app.get('/:id', auth, (req, res) => {
+
+    const id = req.params.id;
+
+    Hospital.findById(id)
+        .populate('user', 'name img email')
+        .exec((err, hospitalDB) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    message: `Error a hospital with id - ${id} has not been found`,
+                    err
+                });
+            }
+            if (!hospitalDB) {
+                return res.status(500).json({
+                    ok: false,
+                    errors: { message: `Dont exists hospital with id - ${id}` },
+                });
+            }
+            res.status(200).json({
+                ok: true,
+                message: `Hospital data with id: ${id}`,
+                hospital: hospitalDB
+            });
+        });
+});
 
 /* CREATE NEW HOSPITAL */
 app.post('/', auth, (req, res) => {
@@ -69,7 +97,7 @@ app.post('/', auth, (req, res) => {
         res.status(201).json({
             ok: true,
             message: 'Hospital saved in the database',
-            savedHospital
+            hospital: savedHospital
         });
     });
 });
@@ -138,7 +166,7 @@ app.delete('/:id', auth, (req, res) => {
         res.status(200).json({
             ok: true,
             message: `The hospital with id - ${id} has been removed correctly`,
-            deletedHospital
+            hospital: deletedHospital
         });
     });
 });
