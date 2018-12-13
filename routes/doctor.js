@@ -45,6 +45,36 @@ app.get('/', (req, res) => {
         });
 });
 
+/* GET DOCTOR BY ID  */
+app.get('/:id', (req, res) => {
+
+    const id = req.params.id;
+
+    Doctor.findById(id)
+        .populate('users', 'name email img')
+        .populate('hospitals')
+        .exec((err, doctor) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    message: `Error when removing the doctor with id - ${id}`,
+                    err
+                });
+            }
+            if (!doctor) {
+                return res.status(400).json({
+                    ok: false,
+                    errors: { message: `Dont exists doctor with id - ${id}` },
+                });
+            }
+            res.status(200).json({
+                ok: true,
+                message: `The doctor has been found with id - ${id} `,
+                doctor
+            });
+        });
+})
+
 
 /* CREATE NEW DOCTOR */
 app.post('/', auth, (req, res) => {
@@ -70,7 +100,7 @@ app.post('/', auth, (req, res) => {
         res.status(201).json({
             ok: true,
             message: 'Doctor saved in the database',
-            savedDoctor,
+            doctor: savedDoctor,
             userToken: req.user
         });
     });
@@ -142,7 +172,7 @@ app.delete('/:id', auth, (req, res) => {
         res.status(200).json({
             ok: true,
             message: `The doctor with id - ${id} has been removed correctly`,
-            deletedDoctor
+            doctor: deletedDoctor
         });
     });
 
