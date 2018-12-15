@@ -123,6 +123,13 @@ app.put('/:id', auth, (req, res) => {
             });
         }
 
+        if (!doctorDB) {
+            return res.status(400).json({
+                ok: false,
+                errors: { message: `Dont exists doctor with id - ${id}` },
+            });
+        }
+
         // save doctor data
         doctorDB.name = req.body.name;
         doctorDB.hospital = req.body.hospital;
@@ -141,7 +148,7 @@ app.put('/:id', auth, (req, res) => {
             res.status(200).json({
                 ok: true,
                 message: 'Update doctor in database',
-                savedDoctor
+                doctor: savedDoctor
             });
         });
     });
