@@ -84,7 +84,7 @@ function uploadByType(type, id, fileName, res) {
                     });
                 }
                 // if the user already had an uploaded image, need to overwrite the old path
-                const oldPath = `./uploads/user/${userDb.img}`;
+                const oldPath = `../uploads/user/${userDb.img}`;
                 // if the old file exists in path, erase it
                 if (fs.existsSync(oldPath)) {
                     fs.unlinkSync(oldPath);
@@ -112,7 +112,7 @@ function uploadByType(type, id, fileName, res) {
                     });
                 }
                 // if the doctor already had an uploaded image, need to overwrite the old path
-                const oldPath = `./uploads/doctor/${doctorDB.img}`;
+                const oldPath = `../uploads/doctor/${doctorDB.img}`;
                 // if the old file exists in path, erase it
                 if (fs.existsSync(oldPath)) {
                     fs.unlinkSync(oldPath);
@@ -138,7 +138,7 @@ function uploadByType(type, id, fileName, res) {
                     });
                 }
                 // if the hospital already had an uploaded image, need to overwrite the old path
-                const oldPath = `./uploads/hospital/${hospitalDb.img}`;
+                const oldPath = `../uploads/hospital/${hospitalDb.img}`;
                 // if the old file exists in path, erase it
                 if (fs.existsSync(oldPath)) {
                     fs.unlinkSync(oldPath);
