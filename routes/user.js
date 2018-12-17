@@ -3,7 +3,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 
 // verify token middleware
-const auth = require('../middlewares/auth').verifyToken;
+const auth = require('../middlewares/auth');
 
 // variable initialization to create the application
 const app = express();
@@ -44,7 +44,7 @@ app.get('/', (req, res) => {
 });
 
 /* UPDATE USER */
-app.put('/:id', auth, (req, res) => {
+app.put('/:id', [auth.verifyToken, auth.verifyAdminOrSame], (req, res) => {
 
     // get id from url
     const id = req.params.id;
@@ -119,7 +119,7 @@ app.post('/', (req, res) => {
 });
 
 /* DELETE USER */
-app.delete('/:id', auth, (req, res) => {
+app.delete('/:id', [auth.verifyToken, auth.verifyAdminOrSame], (req, res) => {
 
     const id = req.params.id;
 

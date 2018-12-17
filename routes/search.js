@@ -79,26 +79,28 @@ app.get('/all/:term', (req, res) => {
 
 function getHospitals(regex) {
     return new Promise((resolve, reject) => {
-        Hospital.find({ name: regex }, (err, hospitalsDB) => {
-            err ? reject('Error at load hospitals data: ', err) : resolve(hospitalsDB);
-        });
+        Hospital.find({ name: regex })
+            .exec((err, hospitals) => {
+                err ? reject('Error when load hospitals: ', err) : resolve(hospitals);
+            });
     });
 }
 
 function getDoctors(regex) {
     return new Promise((resolve, reject) => {
-        Doctor.find({ name: regex }, (err, doctorsDB) => {
-            err ? reject('Error at load doctors data: ', err) : resolve(doctorsDB);
-        });
+        Doctor.find({ name: regex })
+            .exec((err, doctors) => {
+                err ? reject('Error when load doctors data: ', err) : resolve(doctors);
+            });
     });
 }
 
 function getUsers(regex) {
     return new Promise((resolve, reject) => {
-        User.find({}, 'name email role google')
+        User.find({}, 'name email role google img')
             .or([{ 'name': regex }, { 'email': regex }]) // array of search conditions
             .exec((err, usersDB) => {
-                err ? reject('Error at load users data: ', err) : resolve(usersDB);
+                err ? reject('Error when load users data: ', err) : resolve(usersDB);
             })
     });
 }

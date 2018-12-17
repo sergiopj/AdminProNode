@@ -21,3 +21,19 @@ exports.verifyToken = (req, res, next) => {
         next();
     });
 }
+
+/* VERIFY ADMIN OR SAME USER middleware*/
+exports.verifyAdminOrSame = (req, res, next) => {
+    const user = req.user;
+    const id = req.params.id;
+    if (user.role === 'ADMIN_ROLE' || user._id === id) {
+        // If everything is fine you can continue
+        next();
+    } else {
+        return res.status(401).json({
+            ok: false,
+            message: 'You can not through here',
+            error: { message: 'You can not through here' }
+        });
+    }
+}
