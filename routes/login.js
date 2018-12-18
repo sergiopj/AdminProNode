@@ -2,6 +2,8 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+// token auth
+const mdAutentication = require('../middlewares/auth');
 
 const SEED = require('../config/config').SEED;
 
@@ -35,6 +37,16 @@ async function verify(token) {
         googleUser: true
     }
 }
+
+/* RENEW TOKEN */
+app.get('/renewToken', mdAutentication.verifyToken, (req, res) => {
+    const token = jwt.sign({ user: req.user }, SEED, { expiresIn: 14400 }); // 4 hours
+    res.status(200).json({
+        ok: true,
+        token
+    });
+});
+
 
 /* GOOGLE AUTH */
 app.post('/google', async(req, res) => {
